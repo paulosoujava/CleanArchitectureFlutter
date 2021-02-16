@@ -1,0 +1,32 @@
+name: clean_architecture
+description: A new Flutter project.
+
+publish_to: 'none' 
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+    
+  cupertino_icons: ^1.0.0
+  http:
+  provider:
+  flutter_secure_storage:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test:
+  mockito:
+  faker:
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - lib/ui/assets/
