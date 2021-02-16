@@ -42,6 +42,12 @@ class _LoginPageState extends State<LoginPage> {
             }
           });
 
+          widget.presenter.navigationToStream.listen((page) {
+            if (page?.isNotEmpty == true) {
+              Navigator.pushNamed(context, page);
+            }
+          });
+
           widget.presenter.mainErrorStream.listen((error) {
             if (error != null && error.isNotEmpty) {
               showErrorMessage(context, error);
@@ -69,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                             EmailInput(),
                             PasswordInput(),
                             ButtonLogin(),
+                            SizedBox(height: 35),
                             FlatButton.icon(onPressed: () {}, icon: Icon(Icons.person), label: Text('Criar Conta'))
                           ],
                         ),

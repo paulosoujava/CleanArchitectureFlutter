@@ -13,6 +13,7 @@ class LoginState {
   String emailError;
   String passwordError;
   String mainError;
+  String navigateTo;
   bool isLoading = false;
 
   bool get isFormValid => emailError == null && passwordError == null && email != null && password != null;
@@ -29,6 +30,7 @@ class StreamLoginPresenter implements LoginPresenter {
   Stream<String> get emailErrorStream => _controller?.stream?.map((state) => state.emailError)?.distinct();
   Stream<String> get passwordErrorStream => _controller?.stream?.map((state) => state.passwordError)?.distinct();
   Stream<String> get mainErrorStream => _controller?.stream?.map((state) => state.mainError)?.distinct();
+  Stream<String> get navigationToStream => _controller?.stream?.map((state) => state.navigateTo)?.distinct();
   Stream<bool> get isFormValidStream => _controller?.stream?.map((state) => state.isFormValid)?.distinct();
   Stream<bool> get isLoadingStream => _controller?.stream?.map((state) => state.isLoading)?.distinct();
 
@@ -53,15 +55,20 @@ class StreamLoginPresenter implements LoginPresenter {
   }
 
   Future<void> auth() async {
-    _state.isLoading = true;
-    _update();
     try {
+      _showloading(true);
       final account = await authentication.auth(AuthenticationParams(email: _state.email, secret: _state.password));
       await saveCurrentAccount.save(account);
+      _state.navigateTo = '/surveys';
+      _update();
     } on DomainError catch (error) {
+      _showloading(false);
       _state.mainError = error.description;
     }
-    _state.isLoading = false;
+  }
+
+  _showloading(bool isShow) {
+    _state.isLoading = isShow;
     _update();
   }
 

@@ -154,7 +154,7 @@ void main() {
     sut.validateEmail(email);
     sut.validatePassword(password);
 
-    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+    expectLater(sut.isLoadingStream, emits(true));
 
     await sut.auth();
   });
@@ -195,5 +195,14 @@ void main() {
     await sut.auth();
 
     verify(saveCurrentAccount.save(AccountEntity(token))).called(1);
+  });
+
+  test('Should change page on success', () async {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    sut.navigationToStream.listen(expectAsync1((page) => expect(page, '/surveys')));
+
+    await sut.auth();
   });
 }

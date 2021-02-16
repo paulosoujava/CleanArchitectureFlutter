@@ -19,7 +19,7 @@ class App extends StatelessWidget {
       theme: makeAppTheme(),
       home: makeLoginPage(),
       routes: <String, WidgetBuilder>{
-        '/': (context) => makeLoginPage(),
+        '/surveys': (context) => Scaffold(body: Text('Enquetes')),
       },
     );
   }

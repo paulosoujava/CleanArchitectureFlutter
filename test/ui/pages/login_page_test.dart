@@ -9,18 +9,24 @@ import 'package:mockito/mockito.dart';
 
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
+class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+
 void main() {
   LoginPresenter presenter;
+  MockNavigatorObserver mockObserver;
   StreamController<String> emailErrorController;
   StreamController<String> passwordErrorController;
+  StreamController<String> navigateToController;
   StreamController<String> mainErrorController;
   StreamController<bool> formValidController;
   StreamController<bool> isLoadingController;
 
   void initialize() {
     presenter = LoginPresenterSpy();
+    mockObserver = MockNavigatorObserver();
     emailErrorController = StreamController<String>();
     passwordErrorController = StreamController<String>();
+    navigateToController = StreamController<String>();
     mainErrorController = StreamController<String>();
     formValidController = StreamController<bool>();
     isLoadingController = StreamController<bool>();
@@ -32,6 +38,7 @@ void main() {
     when(presenter.isFormValidStream).thenAnswer((_) => formValidController.stream);
     when(presenter.isLoadingStream).thenAnswer((_) => isLoadingController.stream);
     when(presenter.mainErrorStream).thenAnswer((_) => mainErrorController.stream);
+    when(presenter.navigationToStream).thenAnswer((_) => navigateToController.stream);
   }
 
   void closeStreams() {
@@ -40,13 +47,17 @@ void main() {
     formValidController.close();
     isLoadingController.close();
     mainErrorController.close();
+    navigateToController.close();
   }
 
   Future<void> loadPage(WidgetTester tester) async {
     initialize();
     mockStreams();
 
-    final loginPage = MaterialApp(home: LoginPage(presenter));
+    final loginPage = MaterialApp(
+      home: LoginPage(presenter),
+      navigatorObservers: [mockObserver],
+    );
     await tester.pumpWidget(loginPage);
   }
 
@@ -270,5 +281,13 @@ void main() {
     addTearDown(() {
       verify(presenter.dispose()).called(1);
     });
+  });
+
+  testWidgets('Should change page', (WidgetTester tester) async {
+    await loadPage(tester);
+    navigateToController.add('any_route');
+    await tester.pumpAndSettle();
+    expect(find.text('Enquetes'), findsOneWidget);
+    //verify(mockObserver.didPush(any, any));
   });
 }

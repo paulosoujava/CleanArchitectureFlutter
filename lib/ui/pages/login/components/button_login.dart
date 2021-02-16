@@ -11,6 +11,8 @@ class ButtonLogin extends StatelessWidget {
         stream: presenter.isFormValidStream,
         builder: (context, snapshot) {
           return Container(
+            height: 50,
+            width: 210,
             margin: EdgeInsets.only(top: 50),
             child: RaisedButton(
               onPressed: snapshot.data == true ? presenter.auth : null,
